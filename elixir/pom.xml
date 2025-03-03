@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.arielsoto</groupId>
 	<artifactId>elixir</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>elixir</name>
 	<description>Cocktail Database and More</description>
 	<url/>
