@@ -8,9 +8,10 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration
 public class EmbeddedMongoConfiguration {
+    String mongoUri = System.getenv("TEST_MONGO_URI");
 
     @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(new SimpleMongoClientDatabaseFactory("mongodb://localhost:27017/testdb"));
+        return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoUri));
     }
 }
