@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -76,7 +77,7 @@ class ElixirApplicationTests {
 	}
 
 	@Test
-	void shoudlReturnAnauthorizedWhenCreatingCocktailWithoutAuth() throws Exception {
+	void shouldReturnUnauthorizedWhenCreatingCocktailWithoutAuth() throws Exception {
 		mockMvc.perform(post("/api/v1/cocktails/create")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
@@ -84,6 +85,20 @@ class ElixirApplicationTests {
 						"name": "Mojito"
 					}
 				"""))
-				.andExpect(status().isForbidden());
+				.andExpect(status().isFound())
+				.andExpect(header().string("Location", "http://localhost/login"));
+	}
+
+	@Test
+	void shouldCreateCocktailWhenAuthenticated() throws Exception {
+		mockMvc.perform(post("/api/v1/cocktails/create")
+				.with(oauth2Login())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+					{
+						"name": "Vodka Martini"
+					}
+				"""))
+				.andExpect(status().isOk());
 	}
 }
