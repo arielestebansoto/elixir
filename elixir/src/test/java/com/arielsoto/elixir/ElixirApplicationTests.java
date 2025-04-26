@@ -1,6 +1,6 @@
 package com.arielsoto.elixir;
 
-import com.arielsoto.elixir.cocktail.common.domain.Cocktail;
+import com.arielsoto.elixir.cocktail.common.domain.*;
 import com.arielsoto.elixir.cocktail.common.repository.ICocktailRepository;
 import com.arielsoto.elixir.config.EmbeddedMongoConfiguration;
 import com.arielsoto.elixir.config.TestSecurityConfig;
@@ -47,8 +47,25 @@ class ElixirApplicationTests {
 	@BeforeEach
 	void setUp() {
 		repository.deleteAll();
-		Cocktail cocktail = new Cocktail("Mojito");
-		repository.save(cocktail);
+
+		Measure oz = new Measure("ounces", "oz");
+
+		Amount rumAmount = new Amount(oz, 2);
+		Ingredient rum = new Ingredient("Rum", "distilled alcoholic ");
+		RecipeIngredient mojitoRum = new RecipeIngredient(rum, rumAmount);
+
+		Amount juiceLimeAmount = new Amount(oz, 1);
+		Ingredient lime = new Ingredient("Lime", "fruit juice ");
+		RecipeIngredient mojitoLime = new RecipeIngredient(lime, juiceLimeAmount);
+
+		Recipe mojitoRecipe = new Recipe();
+		mojitoRecipe.addIngredient(mojitoRum);
+		mojitoRecipe.addIngredient(mojitoLime);
+
+		Recipes recipesMojito = new Recipes();
+		recipesMojito.addRecipe(mojitoRecipe);
+		Cocktail mojito = new Cocktail("Mojito", recipesMojito);
+		repository.save(mojito);
 	}
 
 	@Test

@@ -1,3 +1,5 @@
 package com.arielsoto.elixir.cocktail.createcokctail;
 
-public record CreateCocktailCommand(String name) { }
+import com.arielsoto.elixir.cocktail.common.domain.Recipes;
+
+public record CreateCocktailCommand(String name, Recipes recipes) { }

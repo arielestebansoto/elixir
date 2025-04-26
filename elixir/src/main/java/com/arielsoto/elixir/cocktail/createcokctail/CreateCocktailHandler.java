@@ -12,7 +12,7 @@ public class CreateCocktailHandler {
     private final ICocktailRepository repository;
 
     public CocktailResult handle(CreateCocktailCommand command) {
-        Cocktail newCocktail = new Cocktail(command.name());
+        Cocktail newCocktail = new Cocktail(command.name(), command.recipes());
 
         if (repository.findByNormalizedName(newCocktail.normalizedName()).isPresent())
             throw new DuplicateKeyException("Cocktail " + newCocktail.normalizedName() + " already exists.");
