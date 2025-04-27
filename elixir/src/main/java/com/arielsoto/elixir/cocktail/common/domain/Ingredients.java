@@ -1,12 +1,10 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Document
 @Data
 public class Ingredients {
     private List<RecipeIngredient> ingredients;
