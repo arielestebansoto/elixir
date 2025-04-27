@@ -48,7 +48,7 @@ class ElixirApplicationTests {
 	void setUp() {
 		repository.deleteAll();
 
-		Measure oz = new Measure("ounces", "oz");
+		Measure oz = Measure.ounce();
 
 		Amount rumAmount = new Amount(oz, 2);
 		Ingredient rum = new Ingredient("Rum", "distilled alcoholic ");
