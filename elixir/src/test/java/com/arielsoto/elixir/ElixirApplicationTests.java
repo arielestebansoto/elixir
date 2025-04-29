@@ -2,6 +2,7 @@ package com.arielsoto.elixir;
 
 import com.arielsoto.elixir.cocktail.common.domain.*;
 import com.arielsoto.elixir.cocktail.common.repository.ICocktailRepository;
+import com.arielsoto.elixir.cocktail.common.repository.IIngredientRepository;
 import com.arielsoto.elixir.cocktail.common.repository.IMeasureRepository;
 import com.arielsoto.elixir.config.EmbeddedMongoConfiguration;
 import com.arielsoto.elixir.config.TestSecurityConfig;
@@ -43,6 +44,9 @@ class ElixirApplicationTests {
 	private IMeasureRepository measureRepository;
 
 	@Autowired
+	private IIngredientRepository ingredientRepository;
+
+	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Test
@@ -54,13 +58,9 @@ class ElixirApplicationTests {
 	void setUp() {
 		cleanDB();
 		seedMeasures();
+		seedIngredients();
 
-		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
-
-		if (oz.isEmpty())
-			throw new IllegalArgumentException("Measure ounce not found.");
-
-		Recipes recipesMojito = getRecipes(oz);
+		Recipes recipesMojito = mojitoRecipes();
 		Cocktail mojito = new Cocktail("Mojito", recipesMojito);
 		repository.save(mojito);
 	}
@@ -68,6 +68,7 @@ class ElixirApplicationTests {
 	private void cleanDB() {
 		repository.deleteAll();
 		measureRepository.deleteAll();
+		ingredientRepository.deleteAll();
 	}
 
 	private void seedMeasures() {
@@ -75,15 +76,29 @@ class ElixirApplicationTests {
 		measureRepository.save(ounce);
 	}
 
-	private static Recipes getRecipes(Optional<Measure> oz) {
-		Amount rumAmount = new Amount(oz.get(), 2);
-
+	private void seedIngredients() {
 		Ingredient rum = new Ingredient("Rum", "distilled alcoholic ");
-		RecipeIngredient mojitoRum = new RecipeIngredient(rum, rumAmount);
+		ingredientRepository.save(rum);
+
+		Ingredient lime = new Ingredient("Lime", "fruit juice ");
+		ingredientRepository.save(lime);
+	}
+
+	private Recipes mojitoRecipes() {
+		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
+		if (oz.isEmpty()) throw new IllegalArgumentException("Measure ounce not found.");
+
+		Optional<Ingredient> rum = ingredientRepository.findByNormalizedName("rum");
+		if (rum.isEmpty()) throw new IllegalArgumentException("Rum not found.");
+
+		Optional<Ingredient> lime = ingredientRepository.findByNormalizedName("lime");
+		if (lime.isEmpty()) throw new IllegalArgumentException("Lime not found.");
+
+		Amount rumAmount = new Amount(oz.get(), 2);
+		RecipeIngredient mojitoRum = new RecipeIngredient(rum.get(), rumAmount);
 
 		Amount juiceLimeAmount = new Amount(oz.get(), 1);
-		Ingredient lime = new Ingredient("Lime", "fruit juice ");
-		RecipeIngredient mojitoLime = new RecipeIngredient(lime, juiceLimeAmount);
+		RecipeIngredient mojitoLime = new RecipeIngredient(lime.get(), juiceLimeAmount);
 
 		Recipe mojitoRecipe = new Recipe();
 		mojitoRecipe.addIngredient(mojitoRum);
