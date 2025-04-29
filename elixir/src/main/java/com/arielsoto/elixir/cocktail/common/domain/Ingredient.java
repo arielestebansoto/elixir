@@ -1,5 +1,6 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
+import com.arielsoto.elixir.cocktail.common.utils.NameNormalizer;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,12 +17,8 @@ public class Ingredient {
     
     public Ingredient(String name, String type) {
         this.name = name;
-        this.normalizedName = this.normalizeName(name);
+        this.normalizedName = NameNormalizer.normalize(name);
         this.type = type;
-    }
-
-    private String normalizeName(String name) {
-        return name.toLowerCase().trim().replaceAll("\\s+", "-");
     }
 
     public String name() { return this.name; };
