@@ -1,30 +1,19 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
-import com.arielsoto.elixir.cocktail.common.utils.NameNormalizer;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "measures")
 @Getter
-public class Measure {
-    @Id
-    private String Id;
-
-    private String name;
-    @Indexed(unique = true)
-    private String normalizedName;
+public class Measure extends NamedDocument {
     private String unit;
 
     public Measure() {}
 
     public Measure(String name, String unit) {
-        this.name = name;
-        this.normalizedName = NameNormalizer.normalize(name);
+        super(name);
         this.unit = unit;
     }
 
-    public String name() { return this.name; }
     public String unit() { return this.unit; }
 }

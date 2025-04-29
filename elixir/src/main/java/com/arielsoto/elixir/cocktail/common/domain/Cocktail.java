@@ -1,36 +1,19 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
-import com.arielsoto.elixir.cocktail.common.utils.NameNormalizer;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
 
 @Document(collection = "cocktails")
 @Getter
-public class Cocktail {
-    @Id
-    private String id;
-    private String name;
-    @Indexed(unique = true)
-    private String normalizedName;
+public class Cocktail extends NamedDocument {
     private Recipes recipes;
 
     public Cocktail(String name, Recipes recipes) {
-        Objects.requireNonNull(recipes);
-
-        if (recipes.recipes() == null || recipes.recipes().isEmpty())
-            throw new IllegalArgumentException("A Cocktail must have at least one recipe.");
-
-        this.name = name;
-        this.normalizedName = NameNormalizer.normalize(name);
-        this.recipes = recipes;
+        super(name);
+        this.recipes = Objects.requireNonNull(recipes);
     }
 
-    public String id() { return this.id; }
-    public String name() { return this.name; }
-    public String normalizedName() { return this.normalizedName; }
     public Recipes recipes() { return this.recipes; }
 }
