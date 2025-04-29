@@ -58,7 +58,7 @@ class ElixirApplicationTests {
 		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
 
 		if (oz.isEmpty())
-			throw new IllegalArgumentException("Measure " + ounce.name() + " not found.");
+			throw new IllegalArgumentException("Measure ounce not found.");
 
 		Recipes recipesMojito = getRecipes(oz);
 		Cocktail mojito = new Cocktail("Mojito", recipesMojito);
