@@ -53,7 +53,7 @@ class ElixirApplicationTests {
 	@BeforeEach
 	void setUp() {
 		cleanDB();
-		createMeasures();
+		seedMeasures();
 
 		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
 
@@ -70,7 +70,7 @@ class ElixirApplicationTests {
 		measureRepository.deleteAll();
 	}
 
-	private void createMeasures() {
+	private void seedMeasures() {
 		Measure ounce = new Measure("ounce", "oz");
 		measureRepository.save(ounce);
 	}
