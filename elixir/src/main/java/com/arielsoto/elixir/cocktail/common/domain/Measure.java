@@ -1,33 +1,33 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+@Document(collection = "measures")
+@Getter
 public class Measure {
-    private String name;
-    private String unit; // Cl, Oz, Ml, Part,
+    @Id
+    private String Id;
 
-    private Measure(String name, String unit) {
+    private String name;
+    @Indexed(unique = true)
+    private String normalizedName;
+    private String unit;
+
+    public Measure() {}
+
+    public Measure(String name, String unit) {
         this.name = name;
+        this.normalizedName = this.normalizeName(name);
         this.unit = unit;
     }
 
     public String name() { return this.name; }
     public String unit() { return this.unit; }
 
-    public static Measure ounce() {
-        return new Measure("Ounce", "Oz");
-    }
-
-    public static Measure centiliter() {
-        return new Measure("Centiliter", "Cl");
-    }
-
-    public static Measure milliliter() {
-        return new Measure("Milliliter", "Ml");
-    }
-
-    public static Measure part() {
-        return new Measure("Part", "Part");
+    private String normalizeName(String name) {
+        return name.toLowerCase().trim().replaceAll("\\s+", "-");
     }
 }
