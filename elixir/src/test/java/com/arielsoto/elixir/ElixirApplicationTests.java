@@ -53,9 +53,8 @@ class ElixirApplicationTests {
 	@BeforeEach
 	void setUp() {
 		cleanDB();
+		createMeasures();
 
-		Measure ounce = new Measure("ounce", "oz");
-		measureRepository.save(ounce);
 		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
 
 		if (oz.isEmpty())
@@ -69,6 +68,11 @@ class ElixirApplicationTests {
 	private void cleanDB() {
 		repository.deleteAll();
 		measureRepository.deleteAll();
+	}
+
+	private void createMeasures() {
+		Measure ounce = new Measure("ounce", "oz");
+		measureRepository.save(ounce);
 	}
 
 	private static Recipes getRecipes(Optional<Measure> oz) {
