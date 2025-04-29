@@ -2,6 +2,7 @@ package com.arielsoto.elixir;
 
 import com.arielsoto.elixir.cocktail.common.domain.*;
 import com.arielsoto.elixir.cocktail.common.repository.ICocktailRepository;
+import com.arielsoto.elixir.cocktail.common.repository.IMeasureRepository;
 import com.arielsoto.elixir.config.EmbeddedMongoConfiguration;
 import com.arielsoto.elixir.config.TestSecurityConfig;
 import org.assertj.core.api.Assertions;
@@ -18,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,6 +40,9 @@ class ElixirApplicationTests {
 	private ICocktailRepository repository;
 
 	@Autowired
+	private IMeasureRepository measureRepository;
+
+	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Test
@@ -47,14 +53,27 @@ class ElixirApplicationTests {
 	@BeforeEach
 	void setUp() {
 		repository.deleteAll();
+		measureRepository.deleteAll();
 
-		Measure oz = Measure.ounce();
+		Measure ounce = new Measure("ounce", "oz");
+		measureRepository.save(ounce);
+		Optional<Measure> oz = measureRepository.findByNormalizedName("ounce");
 
-		Amount rumAmount = new Amount(oz, 2);
+		if (oz.isEmpty())
+			throw new IllegalArgumentException("Measure " + ounce.name() + " not found.");
+
+		Recipes recipesMojito = getRecipes(oz);
+		Cocktail mojito = new Cocktail("Mojito", recipesMojito);
+		repository.save(mojito);
+	}
+
+	private static Recipes getRecipes(Optional<Measure> oz) {
+		Amount rumAmount = new Amount(oz.get(), 2);
+
 		Ingredient rum = new Ingredient("Rum", "distilled alcoholic ");
 		RecipeIngredient mojitoRum = new RecipeIngredient(rum, rumAmount);
 
-		Amount juiceLimeAmount = new Amount(oz, 1);
+		Amount juiceLimeAmount = new Amount(oz.get(), 1);
 		Ingredient lime = new Ingredient("Lime", "fruit juice ");
 		RecipeIngredient mojitoLime = new RecipeIngredient(lime, juiceLimeAmount);
 
@@ -64,8 +83,7 @@ class ElixirApplicationTests {
 
 		Recipes recipesMojito = new Recipes();
 		recipesMojito.addRecipe(mojitoRecipe);
-		Cocktail mojito = new Cocktail("Mojito", recipesMojito);
-		repository.save(mojito);
+		return recipesMojito;
 	}
 
 	@Test

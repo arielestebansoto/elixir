@@ -1,15 +1,14 @@
 package com.arielsoto.elixir.cocktail.common.domain;
 
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
 import java.util.Objects;
 
-@Data
-@Document
+@Document(collection = "cocktails")
+@Getter
 public class Cocktail {
     @Id
     private String id;
