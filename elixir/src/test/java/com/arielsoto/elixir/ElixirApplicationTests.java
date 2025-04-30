@@ -134,7 +134,8 @@ class ElixirApplicationTests {
 								"ingredients":[
 									{"name":"Rum","quantity":2.0,"unit":"oz"},
 									{"name":"Lime","quantity":1.0,"unit":"oz"}
-								]}
+								]
+							}]
 						}
 				""");
 	}
