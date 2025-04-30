@@ -2,12 +2,16 @@ package com.arielsoto.elixir.cocktail.getbynormalizedname;
 
 import com.arielsoto.elixir.cocktail.common.domain.Cocktail;
 
-public record CocktailResult(String name, String normalizedName, RecipesResult recipes) {
+import java.util.List;
+
+public record CocktailResult(String name, String normalizedName, List<RecipeResult> recipes) {
     public CocktailResult(Cocktail cocktail) {
         this(
                 cocktail.name(),
                 cocktail.normalizedName(),
-                new RecipesResult(cocktail.recipes())
+                cocktail.recipes().recipes().stream()
+                        .map(RecipeResult::new)
+                        .toList()
         );
     }
 }
